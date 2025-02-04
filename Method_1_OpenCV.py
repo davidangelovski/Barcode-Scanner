@@ -8,29 +8,22 @@ def detect(image):
         return None
 
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    cv2.imshow("Grayscale Image", gray)  # Show grayscale image
 
     gradX = cv2.Sobel(gray, ddepth=cv2.CV_32F, dx=1, dy=0, ksize=3)
     gradY = cv2.Sobel(gray, ddepth=cv2.CV_32F, dx=0, dy=1, ksize=3)
     gradient = cv2.subtract(gradX, gradY)
     gradient = cv2.convertScaleAbs(gradient)
-    cv2.imshow("Gradient", gradient)  # Show gradient image
 
     blurred = cv2.GaussianBlur(gradient, (5, 5), 0)
-    cv2.imshow("Blurred Image", blurred)  # Show blurred image
 
     _, thresh = cv2.threshold(blurred, 200, 255, cv2.THRESH_BINARY)
-    cv2.imshow("Thresholded Image", thresh)  # Show thresholded image
 
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (30, 10))
     closed = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
-    cv2.imshow("Morphological Closing", closed)  # Show morphological closing
 
     closed = cv2.erode(closed, kernel, iterations=3)
-    cv2.imshow("Erosion", closed)  # Show after erosion
 
     closed = cv2.dilate(closed, kernel, iterations=3)
-    cv2.imshow("Dilation", closed)  # Show after dilation
 
     cnts, _ = cv2.findContours(closed.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     if not cnts:
